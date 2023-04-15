@@ -2,18 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://blog.doubleki.eu.org/categories/</loc>
+    <lastmod>2023-04-15T09:07:12+08:00</lastmod>
+  </url><url>
     <loc>https://blog.doubleki.eu.org/</loc>
     <lastmod>2023-04-15T09:07:12+08:00</lastmod>
   </url><url>
     <loc>https://blog.doubleki.eu.org/post/</loc>
     <lastmod>2023-04-15T09:07:12+08:00</lastmod>
   </url><url>
+    <loc>https://blog.doubleki.eu.org/categories/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2023-04-15T09:07:12+08:00</lastmod>
+  </url><url>
     <loc>https://blog.doubleki.eu.org/post/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</loc>
     <lastmod>2023-04-15T09:07:12+08:00</lastmod>
   </url><url>
     <loc>https://blog.doubleki.eu.org/about/</loc>
-  </url><url>
-    <loc>https://blog.doubleki.eu.org/categories/</loc>
   </url><url>
     <loc>https://blog.doubleki.eu.org/series/</loc>
   </url><url>
