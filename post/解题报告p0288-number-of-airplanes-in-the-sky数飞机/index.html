@@ -4,7 +4,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='题目链接：许昌高中初级OJ
 思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
 注意：落地时间应为降落时间 &#43;1
-$AC$ 代码:
+AC 代码:
 #include &amp;lt;bits/stdc&#43;&#43;.h&amp;gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 &#43; ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 &#43; &amp;#39;0&amp;#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&amp;lt;(Time a) { if (t == a.'>
 <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>
 
@@ -14,7 +14,7 @@ $AC$ 代码:
 <meta property='og:description' content='题目链接：许昌高中初级OJ
 思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
 注意：落地时间应为降落时间 &#43;1
-$AC$ 代码:
+AC 代码:
 #include &amp;lt;bits/stdc&#43;&#43;.h&amp;gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 &#43; ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 &#43; &amp;#39;0&amp;#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&amp;lt;(Time a) { if (t == a.'>
 <meta property='og:url' content='https://blog.doubleki.eu.org/post/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/'>
 <meta property='og:site_name' content='doubleki-blog'>
@@ -23,7 +23,7 @@ $AC$ 代码:
 <meta name="twitter:description" content="题目链接：许昌高中初级OJ
 思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
 注意：落地时间应为降落时间 &#43;1
-$AC$ 代码:
+AC 代码:
 #include &amp;lt;bits/stdc&#43;&#43;.h&amp;gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 &#43; ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 &#43; &amp;#39;0&amp;#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&amp;lt;(Time a) { if (t == a.">
     </head>
     <body class="
@@ -200,7 +200,7 @@ $AC$ 代码:
     >许昌高中初级OJ</a></p>
 <p>思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 +1，降落飞机数 -1，取 max 即为结果</p>
 <p>注意：落地时间应为降落时间 +1</p>
-<p>$AC$ 代码:</p>
+<p>AC 代码:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">readInt</span>()
