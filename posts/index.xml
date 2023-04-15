@@ -1,0 +1,106 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Posts on doubleki&#39;s blog</title>
+        <link>https://blog.doubleki.eu.org/posts/</link>
+        <description>Recent content in Posts on doubleki&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+        <lastBuildDate>Sat, 15 Apr 2023 09:07:12 +0800</lastBuildDate>
+        <atom:link href="https://blog.doubleki.eu.org/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>
+            <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</link>
+            <pubDate>Sat, 15 Apr 2023 09:07:12 +0800</pubDate>
+            
+            <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</guid>
+            <description>题目链接：许昌高中初级OJ
+思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 +1，降落飞机数 -1，取 max 即为结果
+注意：落地时间应为降落时间 +1
+AC 代码:
+#include &amp;lt;bits/stdc++.h&amp;gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 + ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 + &amp;#39;0&amp;#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&amp;lt;(Time a) { if (t == a.</description>
+            <content type="html"><![CDATA[<p>题目链接：<a href="http://192.168.22.60:9998/d/C0006/p/P0288">许昌高中初级OJ</a></p>
+<p>思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 +1，降落飞机数 -1，取 max 即为结果</p>
+<p>注意：落地时间应为降落时间 +1</p>
+<p>AC 代码:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">readInt</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, f <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (ch <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> ch <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;-&#39;</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            f <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (ch <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> ch <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>;
+</span></span><span style="display:flex;"><span>        ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x <span style="color:#f92672">*</span> f;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        putchar(<span style="color:#e6db74">&#39;-&#39;</span>), x <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>x;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (x <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">9</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        write(x <span style="color:#f92672">/</span> <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    putchar(x <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Time</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> t;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> k;
+</span></span><span style="display:flex;"><span>    Time(<span style="color:#66d9ef">int</span> t_, <span style="color:#66d9ef">int</span> k_) <span style="color:#f92672">:</span> t(t_), k(k_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">&lt;</span>(Time a)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (t <span style="color:#f92672">==</span> a.t)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> k <span style="color:#f92672">&lt;</span> a.k;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> t <span style="color:#f92672">&lt;</span> a.t;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> n;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> ans_now, ans;
+</span></span><span style="display:flex;"><span>vector<span style="color:#f92672">&lt;</span>Time<span style="color:#f92672">&gt;</span> a;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;=</span> n; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> l, r;
+</span></span><span style="display:flex;"><span>        l <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        r <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        a.push_back(Time(l, <span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>        a.push_back(Time(r <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    sort(a.begin(), a.end());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> a.size(); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ans_now <span style="color:#f92672">+=</span> a[i].k;
+</span></span><span style="display:flex;"><span>        ans <span style="color:#f92672">=</span> max(ans, ans_now);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    write(ans);
+</span></span><span style="display:flex;"><span>    putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></content>
+        </item>
+        
+    </channel>
+</rss>
