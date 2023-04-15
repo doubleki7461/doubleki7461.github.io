@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>doubleki&#39;s blog</title>
-    <link>https://blog.doubleki.eu.org/</link>
+    <link>https://doubleki.eu.org/</link>
     <description>Recent content on doubleki&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 15 Apr 2023 09:07:12 +0800</lastBuildDate><atom:link href="https://blog.doubleki.eu.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 15 Apr 2023 09:07:12 +0800</lastBuildDate><atom:link href="https://doubleki.eu.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>
-      <link>https://blog.doubleki.eu.org/post/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</link>
+      <link>https://doubleki.eu.org/post/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</link>
       <pubDate>Sat, 15 Apr 2023 09:07:12 +0800</pubDate>
       
-      <guid>https://blog.doubleki.eu.org/post/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</guid>
+      <guid>https://doubleki.eu.org/post/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</guid>
       <description>题目链接：许昌高中初级OJ
 思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 +1，降落飞机数 -1，取 max 即为结果
 注意：落地时间应为降落时间 +1
@@ -23,10 +23,10 @@ AC 代码:
     
     <item>
       <title>About</title>
-      <link>https://blog.doubleki.eu.org/about/</link>
+      <link>https://doubleki.eu.org/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.doubleki.eu.org/about/</guid>
+      <guid>https://doubleki.eu.org/about/</guid>
       <description>This website is doubleki&amp;rsquo;s personal blog.
 I am a student who is studying algorithms in China, I will update some blog about the algorithms I just learnt.
 My connact : Twitter, Github, and Stackoverflow
