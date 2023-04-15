@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://blog.doubleki.eu.org/fr/categories/</loc>
+    <loc>https://blog.doubleki.eu.org/zh-cn/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -10,11 +10,11 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="fr"
-                href="https://blog.doubleki.eu.org/fr/categories/"
+                hreflang="zh-cn"
+                href="https://blog.doubleki.eu.org/zh-cn/categories/"
                 />
   </url><url>
-    <loc>https://blog.doubleki.eu.org/fr/</loc>
+    <loc>https://blog.doubleki.eu.org/zh-cn/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -22,11 +22,11 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="fr"
-                href="https://blog.doubleki.eu.org/fr/"
+                hreflang="zh-cn"
+                href="https://blog.doubleki.eu.org/zh-cn/"
                 />
   </url><url>
-    <loc>https://blog.doubleki.eu.org/fr/series/</loc>
+    <loc>https://blog.doubleki.eu.org/zh-cn/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -34,11 +34,11 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="fr"
-                href="https://blog.doubleki.eu.org/fr/series/"
+                hreflang="zh-cn"
+                href="https://blog.doubleki.eu.org/zh-cn/series/"
                 />
   </url><url>
-    <loc>https://blog.doubleki.eu.org/fr/tags/</loc>
+    <loc>https://blog.doubleki.eu.org/zh-cn/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -46,8 +46,8 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="fr"
-                href="https://blog.doubleki.eu.org/fr/tags/"
+                hreflang="zh-cn"
+                href="https://blog.doubleki.eu.org/zh-cn/tags/"
                 />
   </url>
 </urlset>
