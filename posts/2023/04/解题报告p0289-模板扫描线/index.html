@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="doubleki ">
+<meta name="description" content="题目链接：许昌高中高级OJ
+思路：将矩形面积分解为众多小矩形的面积求和，如图
+则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
+这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
+求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
+在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：
+该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
+typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt; y; ull k; Edge() : x(0), y(pair&amp;lt;ull, ull&amp;gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&amp;lt;ull, ull&amp;gt;(y1_, y2_)), k(k_) { // nothing } bool operator&amp;lt;(Edge a) { if (a.x == x) { return k &amp;lt; a.k; } return x &amp;lt; a." />
+<meta name="keywords" content=", 扫描线, 线段树" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/" />
+
+
+    <title>
+        
+            解题报告：P0289 【模板】扫描线 :: doubleki&#39;s blog 
+        
+    </title>
+
+
+
+
+
+<link rel="stylesheet" href="https://blog.doubleki.eu.org/main.b78c3be9451dc4ca61ca377f3dc2cf2e6345a44c2bae46216a322ef366daa399.css" integrity="sha256-t4w76UUdxMphyjd/PcLPLmNFpEwrrkYhajIu82bao5k=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://blog.doubleki.eu.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://blog.doubleki.eu.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://blog.doubleki.eu.org/favicon-16x16.png">
+    <link rel="manifest" href="https://blog.doubleki.eu.org/site.webmanifest">
+    <link rel="mask-icon" href="https://blog.doubleki.eu.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://blog.doubleki.eu.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="解题报告：P0289 【模板】扫描线">
+<meta itemprop="description" content="题目链接：许昌高中高级OJ
+思路：将矩形面积分解为众多小矩形的面积求和，如图
+则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
+这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
+求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
+在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：
+该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
+typedef unsigned long long ull; struct Edge { ull x; pair&lt;ull, ull&gt; y; ull k; Edge() : x(0), y(pair&lt;ull, ull&gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&lt;ull, ull&gt;(y1_, y2_)), k(k_) { // nothing } bool operator&lt;(Edge a) { if (a.x == x) { return k &lt; a.k; } return x &lt; a."><meta itemprop="datePublished" content="2023-04-16T09:07:12+08:00" />
+<meta itemprop="dateModified" content="2023-04-16T09:07:12+08:00" />
+<meta itemprop="wordCount" content="717"><meta itemprop="image" content="https://blog.doubleki.eu.org"/>
+<meta itemprop="keywords" content="扫描线,线段树," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.doubleki.eu.org"/>
+
+<meta name="twitter:title" content="解题报告：P0289 【模板】扫描线"/>
+<meta name="twitter:description" content="题目链接：许昌高中高级OJ
+思路：将矩形面积分解为众多小矩形的面积求和，如图
+则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
+这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
+求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
+在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：
+该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
+typedef unsigned long long ull; struct Edge { ull x; pair&lt;ull, ull&gt; y; ull k; Edge() : x(0), y(pair&lt;ull, ull&gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&lt;ull, ull&gt;(y1_, y2_)), k(k_) { // nothing } bool operator&lt;(Edge a) { if (a.x == x) { return k &lt; a.k; } return x &lt; a."/>
+
+
+
+    <meta property="og:title" content="解题报告：P0289 【模板】扫描线" />
+<meta property="og:description" content="题目链接：许昌高中高级OJ
+思路：将矩形面积分解为众多小矩形的面积求和，如图
+则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
+这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
+求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
+在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：
+该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
+typedef unsigned long long ull; struct Edge { ull x; pair&lt;ull, ull&gt; y; ull k; Edge() : x(0), y(pair&lt;ull, ull&gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&lt;ull, ull&gt;(y1_, y2_)), k(k_) { // nothing } bool operator&lt;(Edge a) { if (a.x == x) { return k &lt; a.k; } return x &lt; a." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/" /><meta property="og:image" content="https://blog.doubleki.eu.org"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-16T09:07:12+08:00" />
+<meta property="article:modified_time" content="2023-04-16T09:07:12+08:00" />
+
+
+
+
+
+
+    <meta property="article:section" content="算法" />
+
+
+
+    <meta property="article:published_time" content="2023-04-16 09:07:12 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C6TKR98XY0"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-C6TKR98XY0', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://blog.doubleki.eu.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                doubleki&#39;s blog</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://blog.doubleki.eu.org/about">About</a></li><li><a href="https://blog.doubleki.eu.org/categories/">Categories</a></li><li><a href="https://blog.doubleki.eu.org/posts/">Posts</a></li><li><a href="https://blog.doubleki.eu.org/series/">Series</a></li><li><a href="https://blog.doubleki.eu.org/tags/">Tags</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/">解题报告：P0289 【模板】扫描线</a>
+      </h1>
+
+      
+
+      
+
+      
+
+      <div class="post-content">
+        <p>题目链接：<a href="http://192.168.22.60:9998/d/C0006/p/P0289?tid=642537aebb80c444f9397ad2">许昌高中高级OJ</a></p>
+<p>思路：将矩形面积分解为众多小矩形的面积求和，如图</p>
+<p><img src="./1.png" alt="分解矩形"></p>
+<p>则图中每个矩形面积为其底乘高，其<strong>底为相邻两个竖边的横坐标之差</strong>，高则为当前竖边的长度</p>
+<p>这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照<strong>x坐标</strong>进行排序，相邻两个边的横坐标之差即为当前矩形的底边</p>
+<p>求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？</p>
+<p>在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：</p>
+<ul>
+<li>该边被完全标记（cnt=1），则标记长度即为区间长度</li>
+<li>该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度</li>
+</ul>
+<p>接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Edge</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull x;
+</span></span><span style="display:flex;"><span>    pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> y;
+</span></span><span style="display:flex;"><span>    ull k;
+</span></span><span style="display:flex;"><span>    Edge() <span style="color:#f92672">:</span> x(<span style="color:#ae81ff">0</span>), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)), k(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    Edge(ull x_, ull y1_, ull y2_, ull k_) <span style="color:#f92672">:</span> x(x_), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(y1_, y2_)), k(k_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">&lt;</span>(Edge a)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (a.x <span style="color:#f92672">==</span> x)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> k <span style="color:#f92672">&lt;</span> a.k;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x <span style="color:#f92672">&lt;</span> a.x;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>线段树上的结点应当存储该区间覆盖长度（len），区间覆盖次数（cnt）两个变量，定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Node</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull cnt;
+</span></span><span style="display:flex;"><span>    ull len;
+</span></span><span style="display:flex;"><span>    Node() <span style="color:#f92672">:</span> cnt(<span style="color:#ae81ff">0</span>), len(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>更新部分如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updatelen</span>(ull o, ull l, ull r)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (node[o].cnt)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> raw[r <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> raw[l];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>].len <span style="color:#f92672">+</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>].len;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update</span>(ull o, ull l, ull r, ull ql, ull qr, ull val)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (ql <span style="color:#f92672">&lt;=</span> l <span style="color:#f92672">&amp;&amp;</span> r <span style="color:#f92672">&lt;=</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].cnt <span style="color:#f92672">+=</span> val;
+</span></span><span style="display:flex;"><span>        updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ull mid <span style="color:#f92672">=</span> (l <span style="color:#f92672">+</span> r) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&gt;=</span> ql)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>, l, mid, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&lt;</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, r, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>注意：因为y坐标取值范围为 [0,1e9] ,应当对y坐标进行离散化（即代码中raw数组）</p>
+<p>完整代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> ull MAXN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1e5</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">readInt</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, f <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (ch <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> ch <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;-&#39;</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            f <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (ch <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> ch <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>;
+</span></span><span style="display:flex;"><span>        ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x <span style="color:#f92672">*</span> f;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(ull x)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (x <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">9</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        write(x <span style="color:#f92672">/</span> <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    putchar(x <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Node</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull cnt;
+</span></span><span style="display:flex;"><span>    ull len;
+</span></span><span style="display:flex;"><span>    Node() <span style="color:#f92672">:</span> cnt(<span style="color:#ae81ff">0</span>), len(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Edge</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull x;
+</span></span><span style="display:flex;"><span>    pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> y;
+</span></span><span style="display:flex;"><span>    ull k;
+</span></span><span style="display:flex;"><span>    Edge() <span style="color:#f92672">:</span> x(<span style="color:#ae81ff">0</span>), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)), k(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    Edge(ull x_, ull y1_, ull y2_, ull k_) <span style="color:#f92672">:</span> x(x_), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(y1_, y2_)), k(k_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">&lt;</span>(Edge a)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (a.x <span style="color:#f92672">==</span> x)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> k <span style="color:#f92672">&lt;</span> a.k;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x <span style="color:#f92672">&lt;</span> a.x;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>ull n;
+</span></span><span style="display:flex;"><span>ull m;
+</span></span><span style="display:flex;"><span>ull ans <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>Node node[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span>];
+</span></span><span style="display:flex;"><span>ull rk[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>ull raw[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>Edge edge[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updatelen</span>(ull o, ull l, ull r)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (node[o].cnt)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> raw[r <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> raw[l];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>].len <span style="color:#f92672">+</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>].len;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update</span>(ull o, ull l, ull r, ull ql, ull qr, ull val)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (ql <span style="color:#f92672">&lt;=</span> l <span style="color:#f92672">&amp;&amp;</span> r <span style="color:#f92672">&lt;=</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].cnt <span style="color:#f92672">+=</span> val;
+</span></span><span style="display:flex;"><span>        updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ull mid <span style="color:#f92672">=</span> (l <span style="color:#f92672">+</span> r) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&gt;=</span> ql)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>, l, mid, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&lt;</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, r, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    memset(rk, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span>(rk));
+</span></span><span style="display:flex;"><span>    memset(raw, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span>(raw));
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ull i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;=</span> n; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> x, y;
+</span></span><span style="display:flex;"><span>        x.first <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        y.first <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        x.second <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        y.second <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        rk[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> y.first;
+</span></span><span style="display:flex;"><span>        rk[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> y.second;
+</span></span><span style="display:flex;"><span>        edge[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (Edge(x.first, y.first, y.second, <span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>        edge[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> (Edge(x.second, y.first, y.second, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    sort(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    m <span style="color:#f92672">=</span> unique(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">-</span> rk <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ull i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> newy;
+</span></span><span style="display:flex;"><span>        newy.first <span style="color:#f92672">=</span> lower_bound(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> m <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, edge[i].y.first) <span style="color:#f92672">-</span> rk;
+</span></span><span style="display:flex;"><span>        newy.second <span style="color:#f92672">=</span> lower_bound(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> m <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, edge[i].y.second) <span style="color:#f92672">-</span> rk;
+</span></span><span style="display:flex;"><span>        raw[newy.first] <span style="color:#f92672">=</span> edge[i].y.first;
+</span></span><span style="display:flex;"><span>        raw[newy.second] <span style="color:#f92672">=</span> edge[i].y.second;
+</span></span><span style="display:flex;"><span>        edge[i].y <span style="color:#f92672">=</span> newy;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    sort(edge <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, edge <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ull i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> (n <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, m, edge[i].y.first, edge[i].y.second <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, edge[i].k);
+</span></span><span style="display:flex;"><span>        ans <span style="color:#f92672">+=</span> node[<span style="color:#ae81ff">1</span>].len <span style="color:#f92672">*</span> (edge[i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>].x <span style="color:#f92672">-</span> edge[i].x);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    write(ans);
+</span></span><span style="display:flex;"><span>    putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://blog.doubleki.eu.org/tags/%E6%89%AB%E6%8F%8F%E7%BA%BF/">扫描线</a></span>
+        <span class="tag"><a href="https://blog.doubleki.eu.org/tags/%E7%BA%BF%E6%AE%B5%E6%A0%91/">线段树</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://blog.doubleki.eu.org/categories/%E7%AE%97%E6%B3%95/">算法</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        717 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2023-04-16 01:07
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf&amp;caption=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf&amp;canonicalUrl=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf&amp;body=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f&amp;media=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f;description=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f&amp;title=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf&amp;summary=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf&amp;source=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f&amp;resubmit=true&amp;title=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f;title=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf%20https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f&amp;t=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=%e8%a7%a3%e9%a2%98%e6%8a%a5%e5%91%8a%ef%bc%9aP0289%20%e3%80%90%e6%a8%a1%e6%9d%bf%e3%80%91%e6%89%ab%e6%8f%8f%e7%ba%bf&amp;url=https%3a%2f%2fblog.doubleki.eu.org%2fposts%2f2023%2f04%2f%25E8%25A7%25A3%25E9%25A2%2598%25E6%258A%25A5%25E5%2591%258Ap0289-%25E6%25A8%25A1%25E6%259D%25BF%25E6%2589%25AB%25E6%258F%258F%25E7%25BA%25BF%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/">
+                    <span class="button__text">解题报告：P0288 Number of Airplanes in the Sky（数飞机）</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            <span><a href="https://blog.doubleki.eu.org">doubleki</a></span>
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span>
+            <span><a href="https://blog.doubleki.eu.org/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://blog.doubleki.eu.org/bundle.min.205d491810c28f95aa953fae884e1c27abe13fdf93ec63b882d0036b248d4a6282eb2d134e4e7225c6ad6e86db87b08488a361ca4a7383d01fcff43f3d57b9c3.js" integrity="sha512-IF1JGBDCj5WqlT&#43;uiE4cJ6vhP9&#43;T7GO4gtADaySNSmKC6y0TTk5yJcatbobbh7CEiKNhykpzg9Afz/Q/PVe5ww=="></script>
+
+
+
+    </body>
+</html>

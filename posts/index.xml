@@ -6,8 +6,243 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sat, 15 Apr 2023 09:07:12 +0800</lastBuildDate>
+        <lastBuildDate>Sun, 16 Apr 2023 09:07:12 +0800</lastBuildDate>
         <atom:link href="https://blog.doubleki.eu.org/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>解题报告：P0289 【模板】扫描线</title>
+            <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/</link>
+            <pubDate>Sun, 16 Apr 2023 09:07:12 +0800</pubDate>
+            
+            <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/</guid>
+            <description>题目链接：许昌高中高级OJ
+思路：将矩形面积分解为众多小矩形的面积求和，如图
+则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
+这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
+求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
+在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：
+该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
+typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt; y; ull k; Edge() : x(0), y(pair&amp;lt;ull, ull&amp;gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&amp;lt;ull, ull&amp;gt;(y1_, y2_)), k(k_) { // nothing } bool operator&amp;lt;(Edge a) { if (a.x == x) { return k &amp;lt; a.k; } return x &amp;lt; a.</description>
+            <content type="html"><![CDATA[<p>题目链接：<a href="http://192.168.22.60:9998/d/C0006/p/P0289?tid=642537aebb80c444f9397ad2">许昌高中高级OJ</a></p>
+<p>思路：将矩形面积分解为众多小矩形的面积求和，如图</p>
+<p><img src="./1.png" alt="分解矩形"></p>
+<p>则图中每个矩形面积为其底乘高，其<strong>底为相邻两个竖边的横坐标之差</strong>，高则为当前竖边的长度</p>
+<p>这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照<strong>x坐标</strong>进行排序，相邻两个边的横坐标之差即为当前矩形的底边</p>
+<p>求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？</p>
+<p>在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：</p>
+<ul>
+<li>该边被完全标记（cnt=1），则标记长度即为区间长度</li>
+<li>该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度</li>
+</ul>
+<p>接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Edge</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull x;
+</span></span><span style="display:flex;"><span>    pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> y;
+</span></span><span style="display:flex;"><span>    ull k;
+</span></span><span style="display:flex;"><span>    Edge() <span style="color:#f92672">:</span> x(<span style="color:#ae81ff">0</span>), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)), k(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    Edge(ull x_, ull y1_, ull y2_, ull k_) <span style="color:#f92672">:</span> x(x_), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(y1_, y2_)), k(k_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">&lt;</span>(Edge a)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (a.x <span style="color:#f92672">==</span> x)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> k <span style="color:#f92672">&lt;</span> a.k;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x <span style="color:#f92672">&lt;</span> a.x;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>线段树上的结点应当存储该区间覆盖长度（len），区间覆盖次数（cnt）两个变量，定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Node</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull cnt;
+</span></span><span style="display:flex;"><span>    ull len;
+</span></span><span style="display:flex;"><span>    Node() <span style="color:#f92672">:</span> cnt(<span style="color:#ae81ff">0</span>), len(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>更新部分如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updatelen</span>(ull o, ull l, ull r)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (node[o].cnt)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> raw[r <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> raw[l];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>].len <span style="color:#f92672">+</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>].len;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update</span>(ull o, ull l, ull r, ull ql, ull qr, ull val)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (ql <span style="color:#f92672">&lt;=</span> l <span style="color:#f92672">&amp;&amp;</span> r <span style="color:#f92672">&lt;=</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].cnt <span style="color:#f92672">+=</span> val;
+</span></span><span style="display:flex;"><span>        updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ull mid <span style="color:#f92672">=</span> (l <span style="color:#f92672">+</span> r) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&gt;=</span> ql)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>, l, mid, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&lt;</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, r, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>注意：因为y坐标取值范围为 [0,1e9] ,应当对y坐标进行离散化（即代码中raw数组）</p>
+<p>完整代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> ull MAXN <span style="color:#f92672">=</span> <span style="color:#ae81ff">1e5</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">readInt</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, f <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (ch <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> ch <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;-&#39;</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            f <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (ch <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> ch <span style="color:#f92672">&lt;=</span> <span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>;
+</span></span><span style="display:flex;"><span>        ch <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x <span style="color:#f92672">*</span> f;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(ull x)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (x <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">9</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        write(x <span style="color:#f92672">/</span> <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    putchar(x <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Node</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull cnt;
+</span></span><span style="display:flex;"><span>    ull len;
+</span></span><span style="display:flex;"><span>    Node() <span style="color:#f92672">:</span> cnt(<span style="color:#ae81ff">0</span>), len(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Edge</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ull x;
+</span></span><span style="display:flex;"><span>    pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> y;
+</span></span><span style="display:flex;"><span>    ull k;
+</span></span><span style="display:flex;"><span>    Edge() <span style="color:#f92672">:</span> x(<span style="color:#ae81ff">0</span>), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)), k(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    Edge(ull x_, ull y1_, ull y2_, ull k_) <span style="color:#f92672">:</span> x(x_), y(pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span>(y1_, y2_)), k(k_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// nothing
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">&lt;</span>(Edge a)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (a.x <span style="color:#f92672">==</span> x)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> k <span style="color:#f92672">&lt;</span> a.k;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x <span style="color:#f92672">&lt;</span> a.x;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>ull n;
+</span></span><span style="display:flex;"><span>ull m;
+</span></span><span style="display:flex;"><span>ull ans <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>Node node[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span>];
+</span></span><span style="display:flex;"><span>ull rk[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>ull raw[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>Edge edge[MAXN <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updatelen</span>(ull o, ull l, ull r)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (node[o].cnt)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> raw[r <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> raw[l];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].len <span style="color:#f92672">=</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>].len <span style="color:#f92672">+</span> node[o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>].len;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">update</span>(ull o, ull l, ull r, ull ql, ull qr, ull val)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (ql <span style="color:#f92672">&lt;=</span> l <span style="color:#f92672">&amp;&amp;</span> r <span style="color:#f92672">&lt;=</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        node[o].cnt <span style="color:#f92672">+=</span> val;
+</span></span><span style="display:flex;"><span>        updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ull mid <span style="color:#f92672">=</span> (l <span style="color:#f92672">+</span> r) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&gt;=</span> ql)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>, l, mid, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (mid <span style="color:#f92672">&lt;</span> qr)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(o <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, r, ql, qr, val);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    updatelen(o, l, r);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    memset(rk, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span>(rk));
+</span></span><span style="display:flex;"><span>    memset(raw, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span>(raw));
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ull i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;=</span> n; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> x, y;
+</span></span><span style="display:flex;"><span>        x.first <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        y.first <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        x.second <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        y.second <span style="color:#f92672">=</span> readInt();
+</span></span><span style="display:flex;"><span>        rk[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> y.first;
+</span></span><span style="display:flex;"><span>        rk[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> y.second;
+</span></span><span style="display:flex;"><span>        edge[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (Edge(x.first, y.first, y.second, <span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>        edge[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> (Edge(x.second, y.first, y.second, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    sort(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    m <span style="color:#f92672">=</span> unique(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">-</span> rk <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ull i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        pair<span style="color:#f92672">&lt;</span>ull, ull<span style="color:#f92672">&gt;</span> newy;
+</span></span><span style="display:flex;"><span>        newy.first <span style="color:#f92672">=</span> lower_bound(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> m <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, edge[i].y.first) <span style="color:#f92672">-</span> rk;
+</span></span><span style="display:flex;"><span>        newy.second <span style="color:#f92672">=</span> lower_bound(rk <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, rk <span style="color:#f92672">+</span> m <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, edge[i].y.second) <span style="color:#f92672">-</span> rk;
+</span></span><span style="display:flex;"><span>        raw[newy.first] <span style="color:#f92672">=</span> edge[i].y.first;
+</span></span><span style="display:flex;"><span>        raw[newy.second] <span style="color:#f92672">=</span> edge[i].y.second;
+</span></span><span style="display:flex;"><span>        edge[i].y <span style="color:#f92672">=</span> newy;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    sort(edge <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, edge <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (ull i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> (n <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>); i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        update(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, m, edge[i].y.first, edge[i].y.second <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, edge[i].k);
+</span></span><span style="display:flex;"><span>        ans <span style="color:#f92672">+=</span> node[<span style="color:#ae81ff">1</span>].len <span style="color:#f92672">*</span> (edge[i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>].x <span style="color:#f92672">-</span> edge[i].x);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    write(ans);
+</span></span><span style="display:flex;"><span>    putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></content>
+        </item>
         
         <item>
             <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>

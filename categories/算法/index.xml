@@ -7,7 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 15 Apr 2023 09:07:12 +0800</lastBuildDate><atom:link href="https://blog.doubleki.eu.org/categories/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 16 Apr 2023 09:07:12 +0800</lastBuildDate><atom:link href="https://blog.doubleki.eu.org/categories/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解题报告：P0289 【模板】扫描线</title>
+      <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/</link>
+      <pubDate>Sun, 16 Apr 2023 09:07:12 +0800</pubDate>
+      
+      <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0289-%E6%A8%A1%E6%9D%BF%E6%89%AB%E6%8F%8F%E7%BA%BF/</guid>
+      <description>题目链接：许昌高中高级OJ
+思路：将矩形面积分解为众多小矩形的面积求和，如图
+则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
+这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
+求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
+在未扫过任何矩形时，该长度为0，每扫过一个矩形的左边的边，则向该边区间的标记上增加1，每扫过一个右边的边，则向标记上减1，计算标记长度即可，在此处应使用线段树进行提速，每条边的标记长度（len）分为两种情况：
+该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
+typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt; y; ull k; Edge() : x(0), y(pair&amp;lt;ull, ull&amp;gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&amp;lt;ull, ull&amp;gt;(y1_, y2_)), k(k_) { // nothing } bool operator&amp;lt;(Edge a) { if (a.x == x) { return k &amp;lt; a.k; } return x &amp;lt; a.</description>
+    </item>
+    
     <item>
       <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>
       <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</link>
