@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="doubleki ">
 <meta name="description" content="题目链接：许昌高中高级OJ
-思路：将矩形面积分解为众多小矩形的面积求和，如图
+思路 将矩形面积分解为众多小矩形的面积求和，如图
 则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
 这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
 求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
@@ -44,7 +44,7 @@ typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt
 
 <meta itemprop="name" content="解题报告：P0289 【模板】扫描线">
 <meta itemprop="description" content="题目链接：许昌高中高级OJ
-思路：将矩形面积分解为众多小矩形的面积求和，如图
+思路 将矩形面积分解为众多小矩形的面积求和，如图
 则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
 这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
 求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
@@ -52,14 +52,14 @@ typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt
 该边被完全标记（cnt=1），则标记长度即为区间长度 该边未被完全标记（cnt!=1），则标记长度即为其左子树（左半部分）标记长度加上右子树（右半部分）标记长度 接下来考虑实现，存储边可使用结构体，存储x,y1,y2坐标，以及一个k变量区分是左边还是右边，则可得出 Edge 的定义：
 typedef unsigned long long ull; struct Edge { ull x; pair&lt;ull, ull&gt; y; ull k; Edge() : x(0), y(pair&lt;ull, ull&gt;(0, 0)), k(0) { // nothing } Edge(ull x_, ull y1_, ull y2_, ull k_) : x(x_), y(pair&lt;ull, ull&gt;(y1_, y2_)), k(k_) { // nothing } bool operator&lt;(Edge a) { if (a.x == x) { return k &lt; a.k; } return x &lt; a."><meta itemprop="datePublished" content="2023-04-16T09:07:12+08:00" />
 <meta itemprop="dateModified" content="2023-04-16T09:07:12+08:00" />
-<meta itemprop="wordCount" content="717"><meta itemprop="image" content="https://blog.doubleki.eu.org"/>
+<meta itemprop="wordCount" content="718"><meta itemprop="image" content="https://blog.doubleki.eu.org"/>
 <meta itemprop="keywords" content="扫描线,线段树," />
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://blog.doubleki.eu.org"/>
 
 <meta name="twitter:title" content="解题报告：P0289 【模板】扫描线"/>
 <meta name="twitter:description" content="题目链接：许昌高中高级OJ
-思路：将矩形面积分解为众多小矩形的面积求和，如图
+思路 将矩形面积分解为众多小矩形的面积求和，如图
 则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
 这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
 求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
@@ -71,7 +71,7 @@ typedef unsigned long long ull; struct Edge { ull x; pair&lt;ull, ull&gt; y; ull
 
     <meta property="og:title" content="解题报告：P0289 【模板】扫描线" />
 <meta property="og:description" content="题目链接：许昌高中高级OJ
-思路：将矩形面积分解为众多小矩形的面积求和，如图
+思路 将矩形面积分解为众多小矩形的面积求和，如图
 则图中每个矩形面积为其底乘高，其底为相邻两个竖边的横坐标之差，高则为当前竖边的长度
 这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照x坐标进行排序，相邻两个边的横坐标之差即为当前矩形的底边
 求高则较为麻烦，首先想象有一条与y轴平行的竖直线扫过矩形，则高即为该竖直线在矩形中的长度，那么如何求这个长度呢？
@@ -188,8 +188,9 @@ if (!doNotTrack) {
       
 
       <div class="post-content">
-        <p>题目链接：<a href="http://192.168.22.60:9998/d/C0006/p/P0289?tid=642537aebb80c444f9397ad2">许昌高中高级OJ</a></p>
-<p>思路：将矩形面积分解为众多小矩形的面积求和，如图</p>
+        <p>题目链接：<a href="http://www.xcschool.com:9998/d/C0006/p/P0289?tid=642537aebb80c444f9397ad2">许昌高中高级OJ</a></p>
+<h2 id="思路">思路</h2>
+<p>将矩形面积分解为众多小矩形的面积求和，如图</p>
 <p><img src="https://blog.doubleki.eu.org/img/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8A%EF%BC%9AP0289%20%E3%80%90%E6%A8%A1%E6%9D%BF%E3%80%91%E6%89%AB%E6%8F%8F%E7%BA%BF/1.png" alt="分解矩形"></p>
 <p>则图中每个矩形面积为其底乘高，其<strong>底为相邻两个竖边的横坐标之差</strong>，高则为当前竖边的长度</p>
 <p>这个矩形的底较为好求，首先以存储竖边的方式存储矩形，不难发现需要存储三个量：一个x坐标，两个y坐标，存储完之后按照<strong>x坐标</strong>进行排序，相邻两个边的横坐标之差即为当前矩形的底边</p>
@@ -267,7 +268,7 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>    updatelen(o, l, r);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>注意：因为y坐标取值范围为 [0,1e9] ,应当对y坐标进行离散化（即代码中raw数组）</p>
-<p>完整代码如下：</p>
+<h2 id="code">Code</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> ull;
@@ -439,7 +440,7 @@ if (!doNotTrack) {
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        717 Words
+        718 Words
       </p>
 
       <p>
