@@ -1,7 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="doubleki ">
+<meta name="description" content="题目链接：许昌高中高级OJ
+思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
+注意：落地时间应为降落时间 &#43;1
+AC 代码:
+#include &amp;lt;bits/stdc&#43;&#43;.h&amp;gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 &#43; ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 &#43; &amp;#39;0&amp;#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&amp;lt;(Time a) { if (t == a." />
+<meta name="keywords" content=", 扫描线, 线段树" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/" />
+
+
+    <title>
         
+            解题报告：P0288 Number of Airplanes in the Sky（数飞机） :: doubleki&#39;s blog 
+        
+    </title>
+
+
+
+
+
+<link rel="stylesheet" href="https://blog.doubleki.eu.org/main.b78c3be9451dc4ca61ca377f3dc2cf2e6345a44c2bae46216a322ef366daa399.css" integrity="sha256-t4w76UUdxMphyjd/PcLPLmNFpEwrrkYhajIu82bao5k=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://blog.doubleki.eu.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://blog.doubleki.eu.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://blog.doubleki.eu.org/favicon-16x16.png">
+    <link rel="manifest" href="https://blog.doubleki.eu.org/site.webmanifest">
+    <link rel="mask-icon" href="https://blog.doubleki.eu.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://blog.doubleki.eu.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="解题报告：P0288 Number of Airplanes in the Sky（数飞机）">
+<meta itemprop="description" content="题目链接：许昌高中高级OJ
+思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
+注意：落地时间应为降落时间 &#43;1
+AC 代码:
+#include &lt;bits/stdc&#43;&#43;.h&gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;) { if (ch == &#39;-&#39;) { f = -1; } ch = getchar(); } while (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) { x = x * 10 &#43; ch - &#39;0&#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &lt; 0) { putchar(&#39;-&#39;), x = -x; } if (x &gt; 9) { write(x / 10); } putchar(x % 10 &#43; &#39;0&#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&lt;(Time a) { if (t == a."><meta itemprop="datePublished" content="2023-04-15T09:07:12+08:00" />
+<meta itemprop="dateModified" content="2023-04-15T09:07:12+08:00" />
+<meta itemprop="wordCount" content="211"><meta itemprop="image" content="https://blog.doubleki.eu.org"/>
+<meta itemprop="keywords" content="扫描线,线段树," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.doubleki.eu.org"/>
+
+<meta name="twitter:title" content="解题报告：P0288 Number of Airplanes in the Sky（数飞机）"/>
+<meta name="twitter:description" content="题目链接：许昌高中高级OJ
+思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
+注意：落地时间应为降落时间 &#43;1
+AC 代码:
+#include &lt;bits/stdc&#43;&#43;.h&gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;) { if (ch == &#39;-&#39;) { f = -1; } ch = getchar(); } while (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) { x = x * 10 &#43; ch - &#39;0&#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &lt; 0) { putchar(&#39;-&#39;), x = -x; } if (x &gt; 9) { write(x / 10); } putchar(x % 10 &#43; &#39;0&#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&lt;(Time a) { if (t == a."/>
+
+
+
+    <meta property="og:title" content="解题报告：P0288 Number of Airplanes in the Sky（数飞机）" />
+<meta property="og:description" content="题目链接：许昌高中高级OJ
+思路：对于每架飞机，记录其起飞与降落时间，按照时间第一优先级，起飞降落第二优先级排序，从头到尾进行扫描，起飞飞机数 &#43;1，降落飞机数 -1，取 max 即为结果
+注意：落地时间应为降落时间 &#43;1
+AC 代码:
+#include &lt;bits/stdc&#43;&#43;.h&gt; using namespace std; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;) { if (ch == &#39;-&#39;) { f = -1; } ch = getchar(); } while (ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;) { x = x * 10 &#43; ch - &#39;0&#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &lt; 0) { putchar(&#39;-&#39;), x = -x; } if (x &gt; 9) { write(x / 10); } putchar(x % 10 &#43; &#39;0&#39;); return; } struct Time { int t; int k; Time(int t_, int k_) : t(t_), k(k_) { } bool operator&lt;(Time a) { if (t == a." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/" /><meta property="og:image" content="https://blog.doubleki.eu.org"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-15T09:07:12+08:00" />
+<meta property="article:modified_time" content="2023-04-15T09:07:12+08:00" />
+
+
+
+
+
+
+    <meta property="article:section" content="解题报告" />
+
+
+
+    <meta property="article:published_time" content="2023-04-15 09:07:12 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C6TKR98XY0"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-C6TKR98XY0', { 'anonymize_ip': false });
+}
+</script>
+
+
+
     </head>
 
     
