@@ -33,7 +33,8 @@ typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt
       <description>题目链接：许昌高中高级OJ，LibreOJ
 思路 首先考虑不再一条环上，即所有石子排成一列，每次合并相邻的两堆石子，求最大得分的问题
 由于每次只能合并相邻的石子，不满足部分最优解是全局最优解，故无法使用贪心算法
-考虑使用 $dp[i][j]$ 表示从i合并到j的最大花费，则</description>
+考虑使用 $dp[i][j]$ 表示从i合并到j的最大花费，则
+考虑使用 $$dp[i][j]$$ 表示从i合并到j的最大花费，则</description>
     </item>
     
     <item>
