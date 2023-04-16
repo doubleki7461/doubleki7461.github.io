@@ -246,26 +246,6 @@ typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt
         </item>
         
         <item>
-            <title>解题报告：P8151 石子合并2</title>
-            <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8151-%E7%9F%B3%E5%AD%90%E5%90%88%E5%B9%B62/</link>
-            <pubDate>Sun, 16 Apr 2023 09:07:12 +0800</pubDate>
-            
-            <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8151-%E7%9F%B3%E5%AD%90%E5%90%88%E5%B9%B62/</guid>
-            <description>题目链接：许昌高中高级OJ，LibreOJ
-思路 首先考虑不再一条环上，即所有石子排成一列，每次合并相邻的两堆石子，求最大得分的问题
-由于每次只能合并相邻的石子，不满足部分最优解是全局最优解，故无法使用贪心算法
-考虑使用 $dp[i][j]$ 表示从i合并到j的最大花费，则
-考虑使用 $$dp[i][j]$$ 表示从i合并到j的最大花费，则</description>
-            <content type="html"><![CDATA[<p>题目链接：<a href="http://www.xcschool.com:9998/d/C0006/p/P8151?tid=643b39b16f36ff40bf27c360">许昌高中高级OJ</a>，<a href="https://loj.ac/p/10147">LibreOJ</a></p>
-<h1 id="思路">思路</h1>
-<p>首先考虑不再一条环上，即所有石子排成一列，每次合并相邻的两堆石子，求最大得分的问题</p>
-<p>由于每次只能合并相邻的石子，不满足部分最优解是全局最优解，故无法使用贪心算法</p>
-<p>考虑使用 $dp[i][j]$ 表示<strong>从i合并到j的最大花费</strong>，则</p>
-<p>考虑使用 $$dp[i][j]$$ 表示<strong>从i合并到j的最大花费</strong>，则</p>
-]]></content>
-        </item>
-        
-        <item>
             <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>
             <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</link>
             <pubDate>Sat, 15 Apr 2023 09:07:12 +0800</pubDate>
