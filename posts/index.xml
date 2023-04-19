@@ -246,6 +246,127 @@ typedef unsigned long long ull; struct Edge { ull x; pair&amp;lt;ull, ull&amp;gt
         </item>
         
         <item>
+            <title>解题报告：P8151 石子合并2</title>
+            <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8151-%E7%9F%B3%E5%AD%90%E5%90%88%E5%B9%B62/</link>
+            <pubDate>Sun, 16 Apr 2023 09:07:12 +0800</pubDate>
+            
+            <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8151-%E7%9F%B3%E5%AD%90%E5%90%88%E5%B9%B62/</guid>
+            <description>题目链接：许昌高中高级OJ，LibreOJ
+思路 首先考虑不再一条环上，即所有石子排成一列，每次合并相邻的两堆石子，求最大得分的问题
+由于每次只能合并相邻的石子，不满足部分最优解是全局最优解，故无法使用贪心算法
+则使用区间dp，记录 $dp[i][j]$ 为从i位置合并到j位置所得到的最小（最大）得分，则状态转移方程为：
+$$dp[i][j]=min(dp[i][j],dp[i][k]+dp[k+1][j]+sum[j]-sum[i-1])$$
+分两次进行计算最大值与最小值即可
+接下来考虑有环的情况，有两种思路：
+断环，枚举在 $[1,i]$ 位置断环，分别计算最值，时间复杂度为 $\Theta(n^4)$ 复制，将原数组复制一次，计算新数组的最值，最后取 $max \lbrace dp[i][i+n-1],i \in \lbrack 1,n \rbrack \rbrace$ 即可，时间复杂度为 $\Theta(n^3)$ 代码 #include &amp;lt;bits/stdc++.h&amp;gt; using namespace std; const int MAXN = 200; int n; int ans; int num[MAXN*2+5]; int sum[MAXN*2+5]; int dp[MAXN*2+5][MAXN*2+5]; inline int readInt() { int res=0,k=1; char ch; ch=getchar(); while(ch&amp;lt;&amp;#39;0&amp;#39;||ch&amp;gt;&amp;#39;9&amp;#39;) { if(ch==&amp;#39;-&amp;#39;) k=-1; ch=getchar(); } while(ch&amp;gt;=&amp;#39;0&amp;#39;&amp;amp;&amp;amp;ch&amp;lt;=&amp;#39;9&amp;#39;) res*=10,res+=ch-&amp;#39;0&amp;#39;,ch=getchar(); return k*res; } inline void writeInt(int x) { if(x&amp;lt;0) putchar(&amp;#39;-&amp;#39;),x=-x; if(x&amp;gt;9) writeInt(x/10); putchar(x%10+&amp;#39;0&amp;#39;); } int main() { n=readInt(); for(int i=1;i&amp;lt;=n;i++) { num[i]=readInt(); sum[i]=sum[i-1]+num[i]; } for(int i=n+1;i&amp;lt;=2*n;i++) { num[i]=num[i-n]; sum[i]=sum[i-1]+num[i]; } ans=0x3f3f3f3f; memset(dp,0x3f,sizeof(dp)); for(int i=1;i&amp;lt;=2*n;i++) { dp[i][i]=dp[i][i]=0; } for(int l=2;l&amp;lt;=2*n;l++) { for(int i=1;i&amp;lt;=2*n-l+1;i++) { int j=i+l-1; for(int k=i;k&amp;lt;j;k++) { dp[i][j]=min(dp[i][j],dp[i][k]+dp[k+1][j]+sum[j]-sum[i-1]); } } } for(int i=1;i&amp;lt;=n;i++) { ans=min(ans,dp[i][i+n-1]); } writeInt(ans); putchar(&amp;#39;\n&amp;#39;); ans=-1; memset(dp,0,sizeof(dp)); for(int i=1;i&amp;lt;=2*n;i++) { dp[i][i]=dp[i][i]=0; } for(int l=2;l&amp;lt;=2*n;l++) { for(int i=1;i&amp;lt;=2*n-l+1;i++) { int j=i+l-1; for(int k=i;k&amp;lt;j;k++) { dp[i][j]=max(dp[i][j],dp[i][k]+dp[k+1][j]+sum[j]-sum[i-1]); } } } for(int i=1;i&amp;lt;=n;i++) { ans=max(ans,dp[i][i+n-1]); } writeInt(ans); putchar(&amp;#39;\n&amp;#39;); } </description>
+            <content type="html"><![CDATA[<p>题目链接：<a href="http://www.xcschool.com:9998/d/C0006/p/P8151?tid=643b39b16f36ff40bf27c360">许昌高中高级OJ</a>，<a href="https://loj.ac/p/10147">LibreOJ</a></p>
+<h1 id="思路">思路</h1>
+<p>首先考虑不再一条环上，即所有石子排成一列，每次合并相邻的两堆石子，求最大得分的问题</p>
+<p>由于每次只能合并相邻的石子，不满足部分最优解是全局最优解，故无法使用贪心算法</p>
+<p>则使用区间dp，记录 $dp[i][j]$ 为<strong>从i位置合并到j位置所得到的最小（最大）得分</strong>，则状态转移方程为：</p>
+<p>$$dp[i][j]=min(dp[i][j],dp[i][k]+dp[k+1][j]+sum[j]-sum[i-1])$$</p>
+<p>分两次进行计算最大值与最小值即可</p>
+<p>接下来考虑有环的情况，有两种思路：</p>
+<ul>
+<li>断环，枚举在 $[1,i]$ 位置断环，分别计算最值，时间复杂度为 $\Theta(n^4)$</li>
+<li>复制，将原数组复制一次，计算新数组的最值，最后取 $max \lbrace dp[i][i+n-1],i \in \lbrack 1,n \rbrack \rbrace$ 即可，时间复杂度为 $\Theta(n^3)$</li>
+</ul>
+<h1 id="代码">代码</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> MAXN <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> n;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> ans;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> num[MAXN<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> sum[MAXN<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> dp[MAXN<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>][MAXN<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">5</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">readInt</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,k<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span> ch;
+</span></span><span style="display:flex;"><span>	ch<span style="color:#f92672">=</span>getchar();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">while</span>(ch<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span><span style="color:#f92672">||</span>ch<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(ch<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>)
+</span></span><span style="display:flex;"><span>			k<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>		ch<span style="color:#f92672">=</span>getchar();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">while</span>(ch<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span><span style="color:#f92672">&amp;&amp;</span>ch<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>)
+</span></span><span style="display:flex;"><span>		res<span style="color:#f92672">*=</span><span style="color:#ae81ff">10</span>,res<span style="color:#f92672">+=</span>ch<span style="color:#f92672">-</span><span style="color:#e6db74">&#39;0&#39;</span>,ch<span style="color:#f92672">=</span>getchar();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> k<span style="color:#f92672">*</span>res;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">writeInt</span>(<span style="color:#66d9ef">int</span> x)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>		putchar(<span style="color:#e6db74">&#39;-&#39;</span>),x<span style="color:#f92672">=-</span>x;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>)
+</span></span><span style="display:flex;"><span>		writeInt(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">+</span><span style="color:#e6db74">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	n<span style="color:#f92672">=</span>readInt();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		num[i]<span style="color:#f92672">=</span>readInt();
+</span></span><span style="display:flex;"><span>		sum[i]<span style="color:#f92672">=</span>sum[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span>num[i];
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		num[i]<span style="color:#f92672">=</span>num[i<span style="color:#f92672">-</span>n];
+</span></span><span style="display:flex;"><span>		sum[i]<span style="color:#f92672">=</span>sum[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span>num[i];
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	ans<span style="color:#f92672">=</span><span style="color:#ae81ff">0x3f3f3f3f</span>;
+</span></span><span style="display:flex;"><span>	memset(dp,<span style="color:#ae81ff">0x3f</span>,<span style="color:#66d9ef">sizeof</span>(dp));
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		dp[i][i]<span style="color:#f92672">=</span>dp[i][i]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;l<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n;l<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n<span style="color:#f92672">-</span>l<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span>i<span style="color:#f92672">+</span>l<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>i;k<span style="color:#f92672">&lt;</span>j;k<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				dp[i][j]<span style="color:#f92672">=</span>min(dp[i][j],dp[i][k]<span style="color:#f92672">+</span>dp[k<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>][j]<span style="color:#f92672">+</span>sum[j]<span style="color:#f92672">-</span>sum[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		ans<span style="color:#f92672">=</span>min(ans,dp[i][i<span style="color:#f92672">+</span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	writeInt(ans);
+</span></span><span style="display:flex;"><span>	putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>	ans<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	memset(dp,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(dp));
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		dp[i][i]<span style="color:#f92672">=</span>dp[i][i]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;l<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n;l<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>n<span style="color:#f92672">-</span>l<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span>i<span style="color:#f92672">+</span>l<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>i;k<span style="color:#f92672">&lt;</span>j;k<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				dp[i][j]<span style="color:#f92672">=</span>max(dp[i][j],dp[i][k]<span style="color:#f92672">+</span>dp[k<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>][j]<span style="color:#f92672">+</span>sum[j]<span style="color:#f92672">-</span>sum[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		ans<span style="color:#f92672">=</span>max(ans,dp[i][i<span style="color:#f92672">+</span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	writeInt(ans);
+</span></span><span style="display:flex;"><span>	putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></content>
+        </item>
+        
+        <item>
             <title>解题报告：P0288 Number of Airplanes in the Sky（数飞机）</title>
             <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap0288-number-of-airplanes-in-the-sky%E6%95%B0%E9%A3%9E%E6%9C%BA/</link>
             <pubDate>Sat, 15 Apr 2023 09:07:12 +0800</pubDate>
