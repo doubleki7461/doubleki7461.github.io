@@ -211,7 +211,7 @@ if (!doNotTrack) {
 
       <div class="post-content">
         <p>题目链接：<a href="http://www.xcschool.com:9998/d/C0006/p/P8151?tid=643b39b16f36ff40bf27c360">许昌高中高级OJ</a>，<a href="https://loj.ac/p/10147">LibreOJ</a></p>
-<h1 id="思路">思路</h1>
+<h2 id="思路">思路</h2>
 <p>首先考虑不再一条环上，即所有石子排成一列，每次合并相邻的两堆石子，求最大得分的问题</p>
 <p>由于每次只能合并相邻的石子，不满足部分最优解是全局最优解，故无法使用贪心算法</p>
 <p>则使用区间dp，记录 $dp[i][j]$ 为<strong>从i位置合并到j位置所得到的最小（最大）得分</strong>，则状态转移方程为：</p>
@@ -222,7 +222,7 @@ if (!doNotTrack) {
 <li>断环，枚举在 $[1,i]$ 位置断环，分别计算最值，时间复杂度为 $\Theta(n^4)$</li>
 <li>复制，将原数组复制一次，计算新数组的最值，最后取 $max \lbrace dp[i][i+n-1],i \in \lbrack 1,n \rbrack \rbrace$ 即可，时间复杂度为 $\Theta(n^3)$</li>
 </ul>
-<h1 id="代码">代码</h1>
+<h2 id="代码">代码</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> MAXN <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span>;
