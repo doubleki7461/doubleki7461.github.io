@@ -7,7 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 22 Apr 2023 17:19:54 +0800</lastBuildDate><atom:link href="https://blog.doubleki.eu.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 23 Apr 2023 09:03:39 +0800</lastBuildDate><atom:link href="https://blog.doubleki.eu.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解题报告：P8158 选课</title>
+      <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8158-%E9%80%89%E8%AF%BE/</link>
+      <pubDate>Sun, 23 Apr 2023 09:03:39 +0800</pubDate>
+      
+      <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8158-%E9%80%89%E8%AF%BE/</guid>
+      <description>题目链接：许昌高中高级OJ（内网），许昌高中高级OJ（外网），LibreOJ
+思路 本题使用树状dp解决：
+首先将无根树转有根树（虚拟一个 $0$ 号结点，为所有结点的父亲，这样同时也避免了输入时的特殊情况处理）
+定义状态：
+$dp[i][j]$ 表示以 $i$ 为根的子树上选 $j$ 门课可以得到的最大学分
+状态转移方程：
+$$dp[i][j]=\max_{\sum\limits_{m=1}\limits^{|i.son|}k_m = j-1} \lbrace \sum\limits_{m=1}\limits^{|i.son|}dp[i.son_m][k_m] \rbrace + nums[i]$$
+代码 #include &amp;lt;bits/stdc++.h&amp;gt; using namespace std; const int MAXN=300; struct Edge { int from; int to; int dis; Edge(int u, int v, int d) : from(u), to(v), dis(d) { // nothing } }; int n,q; int nums[MAXN+5]; int dp[MAXN+5][MAXN+5]; vector&amp;lt;Edge&amp;gt; edge; vector&amp;lt;int&amp;gt; g[MAXN+5]; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 + ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 + &amp;#39;0&amp;#39;); return; } void add(int u, int v, int d) { edge.</description>
+    </item>
+    
+    <item>
+      <title>解题报告：P8157 二叉苹果树</title>
+      <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8157-%E4%BA%8C%E5%8F%89%E8%8B%B9%E6%9E%9C%E6%A0%91/</link>
+      <pubDate>Sun, 23 Apr 2023 08:50:58 +0800</pubDate>
+      
+      <guid>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8157-%E4%BA%8C%E5%8F%89%E8%8B%B9%E6%9E%9C%E6%A0%91/</guid>
+      <description>题目链接：许昌高中高级OJ（内网），许昌高中高级OJ（外网），LibreOJ
+思路 题目中说要求保留 $Q$ 个树枝，等价于保留 $Q+1$ 个结点，而每个树枝上的苹果树可以看为其连接着的儿子上的苹果，则题目转化为：给定一棵已知的二叉树，保留 $Q+1$ 个结点，求所保留的结点的最大权值和
+则本题可以使用dp求解，定义 $dp[i][j]$ 表示以 $i$ 为树根的子树上保留 $j$ 个结点时的最大权值和
+状态转移方程为：
+$$dp[i][j]=max \lbrace dp[i.lson][k]+dp[i.rson][j-k-1]+nums[i] \rbrace, k \in [0,j-1]$$
+代码 #include &amp;lt;bits/stdc++.h&amp;gt; using namespace std; const int MAXN=100; struct Edge { int from; int to; int dis; Edge(int u, int v, int d) : from(u), to(v), dis(d) { // nothing } }; int n,q; int nums[MAXN+5]; int dp[MAXN+5][MAXN+5]; vector&amp;lt;Edge&amp;gt; edge; vector&amp;lt;int&amp;gt; g[MAXN+5]; inline int readInt() { int x = 0, f = 1; char ch = getchar(); while (ch &amp;lt; &amp;#39;0&amp;#39; || ch &amp;gt; &amp;#39;9&amp;#39;) { if (ch == &amp;#39;-&amp;#39;) { f = -1; } ch = getchar(); } while (ch &amp;gt;= &amp;#39;0&amp;#39; &amp;amp;&amp;amp; ch &amp;lt;= &amp;#39;9&amp;#39;) { x = x * 10 + ch - &amp;#39;0&amp;#39;; ch = getchar(); } return x * f; } inline void write(int x) { if (x &amp;lt; 0) { putchar(&amp;#39;-&amp;#39;), x = -x; } if (x &amp;gt; 9) { write(x / 10); } putchar(x % 10 + &amp;#39;0&amp;#39;); return; } void add(int u, int v, int d) { edge.</description>
+    </item>
+    
     <item>
       <title>解题报告：P8155 分离与合体</title>
       <link>https://blog.doubleki.eu.org/posts/2023/04/%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8Ap8155-%E5%88%86%E7%A6%BB%E4%B8%8E%E5%90%88%E4%BD%93/</link>
